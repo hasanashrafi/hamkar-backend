@@ -1,0 +1,43 @@
+{
+  "name": "hamkar-backend",
+  "version": "1.0.0",
+  "description": "Job matching platform backend for developers and employers",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --no-deprecation server.js",
+    "dev": "nodemon --exec \"node --no-deprecation\" server.js",
+    "test": "jest",
+    "start:legacy": "node server.js",
+    "dev:legacy": "nodemon server.js"
+  },
+  "keywords": [
+    "job-matching",
+    "developers",
+    "employers",
+    "api"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
+  },
+  "overrides": {
+    "punycode": "2.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.6.2",
+    "nodemon": "^3.0.1"
+  }
+}
