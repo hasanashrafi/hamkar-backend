@@ -4,7 +4,7 @@
   "description": "Job matching platform backend for developers and employers",
   "main": "server.js",
   "scripts": {
-    "start": "node --no-deprecation server.js",
+    "start": "node server.js",
     "dev": "nodemon --exec \"node --no-deprecation\" server.js",
     "test": "jest",
     "start:legacy": "node server.js",
