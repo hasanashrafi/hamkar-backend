@@ -118,9 +118,13 @@ const connectDB = async () => {
     console.log('NODE_ENV:', process.env.NODE_ENV);
     console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
     console.log('MONGODB_URI length:', process.env.MONGODB_URI ? process.env.MONGODB_URI.length : 0);
-    console.log('Using MongoDB URI:', mongoURI.substring(0, 20) + '...');
-    console.log('Connecting to MongoDB Atlas...');
+    console.log('Using MongoDB URI:', mongoURI ? mongoURI.substring(0, 20) + '...' : 'Not set');
 
+    if (!mongoURI) {
+      throw new Error('MONGODB_URI environment variable is not set');
+    }
+
+    console.log('Connecting to MongoDB Atlas...');
     await mongoose.connect(mongoURI);
     console.log('✅ Connected to MongoDB');
 
