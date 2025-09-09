@@ -81,7 +81,7 @@ router.get('/', authenticateToken, asyncHandler(async (req, res) => {
     const [jobRequests, total] = await Promise.all([
         JobRequest.find(filter)
             .populate('employerId', 'companyName city industry')
-            .populate('developerId', 'name city skills experienceYears')
+            .populate('developerId', 'firstName lastName city skills experienceYears')
             .sort(sort)
             .skip(skip)
             .limit(limit),
@@ -130,7 +130,7 @@ router.get('/', authenticateToken, asyncHandler(async (req, res) => {
 router.get('/:id', authenticateToken, asyncHandler(async (req, res) => {
     const jobRequest = await JobRequest.findById(req.params.id)
         .populate('employerId', 'companyName city industry')
-        .populate('developerId', 'name city skills experienceYears');
+        .populate('developerId', 'firstName lastName city skills experienceYears');
 
     if (!jobRequest) {
         return res.status(404).json({
@@ -227,7 +227,7 @@ router.post('/', authenticateToken, authorizeRole('Employer'), validate(schemas.
 
     // Populate related data
     await jobRequest.populate('employerId', 'companyName city industry');
-    await jobRequest.populate('developerId', 'name city skills experienceYears');
+    await jobRequest.populate('developerId', 'firstName lastName city skills experienceYears');
 
     res.status(201).json({
         success: true,
@@ -318,7 +318,7 @@ router.put('/:id', authenticateToken, validate(schemas.jobRequestUpdate), asyncH
         updateData,
         { new: true, runValidators: true }
     ).populate('employerId', 'companyName city industry')
-        .populate('developerId', 'name city skills experienceYears');
+        .populate('developerId', 'firstName lastName city skills experienceYears');
 
     res.json({
         success: true,
@@ -398,7 +398,7 @@ router.patch('/:id/accept', authenticateToken, authorizeRole('Developer'), async
         },
         { new: true }
     ).populate('employerId', 'companyName city industry')
-        .populate('developerId', 'name city skills experienceYears');
+        .populate('developerId', 'firstName lastName city skills experienceYears');
 
     res.json({
         success: true,
@@ -478,7 +478,7 @@ router.patch('/:id/reject', authenticateToken, authorizeRole('Developer'), async
         },
         { new: true }
     ).populate('employerId', 'companyName city industry')
-        .populate('developerId', 'name city skills experienceYears');
+        .populate('developerId', 'firstName lastName city skills experienceYears');
 
     res.json({
         success: true,

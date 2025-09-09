@@ -19,7 +19,27 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Developer'
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - password
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 description: Developer's first name
+ *               lastName:
+ *                 type: string
+ *                 description: Developer's last name
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Developer's email address
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 description: Developer's password
  *     responses:
  *       201:
  *         description: Developer created successfully

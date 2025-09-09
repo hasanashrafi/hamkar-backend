@@ -8,17 +8,20 @@ const bcrypt = require('bcryptjs');
  *     Developer:
  *       type: object
  *       required:
- *         - name
+ *         - firstName
+ *         - lastName
  *         - email
  *         - password
- *         - phone
- *         - city
- *         - skills
- *         - experienceYears
  *       properties:
- *         name:
+ *         firstName:
  *           type: string
- *           description: Developer's full name
+ *           description: Developer's first name
+ *         lastName:
+ *           type: string
+ *           description: Developer's last name
+ *         fullName:
+ *           type: string
+ *           description: Developer's full name (computed)
  *         email:
  *           type: string
  *           format: email
@@ -78,11 +81,17 @@ const bcrypt = require('bcryptjs');
 
 const developerSchema = new mongoose.Schema(
     {
-        name: {
+        firstName: {
             type: String,
-            required: [true, 'Name is required'],
+            required: [true, 'First name is required'],
             trim: true,
-            maxlength: [100, 'Name cannot exceed 100 characters'],
+            maxlength: [50, 'First name cannot exceed 50 characters'],
+        },
+        lastName: {
+            type: String,
+            required: [true, 'Last name is required'],
+            trim: true,
+            maxlength: [50, 'Last name cannot exceed 50 characters'],
         },
         email: {
             type: String,
@@ -100,27 +109,18 @@ const developerSchema = new mongoose.Schema(
         },
         phone: {
             type: String,
-            required: [true, 'Phone number is required'],
             trim: true,
         },
         city: {
             type: String,
-            required: [true, 'City is required'],
             trim: true,
         },
         skills: {
             type: [String],
-            required: [true, 'Skills are required'],
-            validate: {
-                validator: function (v) {
-                    return v.length > 0;
-                },
-                message: 'At least one skill is required',
-            },
+            default: [],
         },
         experienceYears: {
             type: Number,
-            required: [true, 'Experience years are required'],
             min: [0, 'Experience years cannot be negative'],
             max: [50, 'Experience years cannot exceed 50'],
         },
@@ -170,9 +170,42 @@ const developerSchema = new mongoose.Schema(
 // Index for search functionality
 developerSchema.index({ skills: 1, city: 1, experienceYears: 1, isAvailable: 1 });
 
+// Virtual for full name
+developerSchema.virtual('fullName').get(function () {
+    return `${this.firstName} ${this.lastName}`;
+});
+
 // Virtual for total projects count
 developerSchema.virtual('totalProjects').get(function () {
     return this.projects ? this.projects.length : 0;
+});
+
+// Virtual for profile completion percentage
+developerSchema.virtual('profileCompletion').get(function () {
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'city', 'skills', 'experienceYears'];
+    const optionalFields = ['githubUrl', 'portfolioUrl', 'resumeUrl', 'profilePicture'];
+
+    let completedFields = 0;
+
+    requiredFields.forEach(field => {
+        if (this[field] && (Array.isArray(this[field]) ? this[field].length > 0 : true)) {
+            completedFields++;
+        }
+    });
+
+    optionalFields.forEach(field => {
+        if (this[field]) {
+            completedFields++;
+        }
+    });
+
+    const totalFields = requiredFields.length + optionalFields.length;
+    return Math.round((completedFields / totalFields) * 100);
+});
+
+// Virtual for profile completion status
+developerSchema.virtual('isProfileComplete').get(function () {
+    return this.profileCompletion >= 80; // 80% completion considered complete
 });
 
 // Hash password before saving
@@ -199,6 +232,19 @@ developerSchema.methods.getPublicProfile = function () {
     delete developerObject.password;
     delete developerObject.__v;
     return developerObject;
+};
+
+// Method to get minimal profile for signup (only basic fields)
+developerSchema.methods.getMinimalProfile = function () {
+    return {
+        _id: this._id,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        role: this.role,
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt
+    };
 };
 
 module.exports = mongoose.model('Developer', developerSchema); 

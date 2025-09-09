@@ -92,26 +92,9 @@ router.get('/developer', authenticateToken, authorizeRole('Developer'), asyncHan
         JobRequest.countDocuments({ developerId, status: 'accepted', interviewDate: { $exists: true } }),
     ]);
 
-    // Calculate profile completion
-    const profile = req.user;
-    const requiredFields = ['name', 'email', 'phone', 'city', 'skills', 'experienceYears'];
-    const optionalFields = ['githubUrl', 'portfolioUrl', 'resumeUrl', 'profilePicture'];
-
-    let completedFields = 0;
-    requiredFields.forEach(field => {
-        if (profile[field] && (Array.isArray(profile[field]) ? profile[field].length > 0 : true)) {
-            completedFields++;
-        }
-    });
-
-    optionalFields.forEach(field => {
-        if (profile[field]) {
-            completedFields++;
-        }
-    });
-
-    const totalFields = requiredFields.length + optionalFields.length;
-    const profileCompletion = Math.round((completedFields / totalFields) * 100);
+    // Get profile completion from the developer object
+    const developer = await Developer.findById(developerId);
+    const profileCompletion = developer ? developer.profileCompletion : 0;
 
     // Get recent activity
     const recentJobRequests = await JobRequest.find({ developerId })
@@ -264,17 +247,18 @@ router.get('/employer', authenticateToken, authorizeRole('Employer'), asyncHandl
 
     // Get recent activity
     const recentJobRequests = await JobRequest.find({ employerId })
-        .populate('developerId', 'name city skills experienceYears')
+        .populate('developerId', 'firstName lastName city skills experienceYears')
         .sort({ createdAt: -1 })
         .limit(5);
 
     const recentActivity = recentJobRequests.map(request => ({
         type: 'job_request',
-        message: `Job request to ${request.developerId.name} - ${request.jobTitle}`,
+        message: `Job request to ${request.developerId.firstName} ${request.developerId.lastName} - ${request.jobTitle}`,
         date: request.createdAt,
         status: request.status,
         developer: {
-            name: request.developerId.name,
+            firstName: request.developerId.firstName,
+            lastName: request.developerId.lastName,
             city: request.developerId.city,
             skills: request.developerId.skills,
             experienceYears: request.developerId.experienceYears,

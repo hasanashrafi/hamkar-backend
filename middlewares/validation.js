@@ -26,20 +26,25 @@ const validate = (schema) => {
 const schemas = {
     // Developer validation schemas
     developerSignup: Joi.object({
-        name: Joi.string().required().min(2).max(100).trim(),
+        firstName: Joi.string().required().min(2).max(50).trim(),
+        lastName: Joi.string().required().min(2).max(50).trim(),
         email: Joi.string().email().required().trim(),
         password: Joi.string().required().min(6).max(100),
-        phone: Joi.string().required().trim(),
-        city: Joi.string().required().trim(),
-        skills: Joi.array().items(Joi.string()).min(1).required(),
-        experienceYears: Joi.number().min(0).max(50).required(),
+    }),
+
+    developerProfileComplete: Joi.object({
+        phone: Joi.string().trim().optional(),
+        city: Joi.string().trim().optional(),
+        skills: Joi.array().items(Joi.string()).min(1).optional(),
+        experienceYears: Joi.number().min(0).max(50).optional(),
         githubUrl: Joi.string().uri().optional(),
         portfolioUrl: Joi.string().uri().optional(),
         salaryExpectation: Joi.number().min(0).optional(),
     }),
 
     developerUpdate: Joi.object({
-        name: Joi.string().min(2).max(100).trim().optional(),
+        firstName: Joi.string().min(2).max(50).trim().optional(),
+        lastName: Joi.string().min(2).max(50).trim().optional(),
         phone: Joi.string().trim().optional(),
         city: Joi.string().trim().optional(),
         skills: Joi.array().items(Joi.string()).min(1).optional(),

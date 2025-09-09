@@ -99,7 +99,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
     const [projects, total] = await Promise.all([
         Project.find(filter)
-            .populate('developerId', 'name city skills experienceYears')
+            .populate('developerId', 'firstName lastName city skills experienceYears')
             .sort(sort)
             .skip(skip)
             .limit(limit),
@@ -150,7 +150,7 @@ router.get('/', asyncHandler(async (req, res) => {
  */
 router.get('/:id', asyncHandler(async (req, res) => {
     const project = await Project.findById(req.params.id)
-        .populate('developerId', 'name city skills experienceYears');
+        .populate('developerId', 'firstName lastName city skills experienceYears');
 
     if (!project) {
         return res.status(404).json({
@@ -223,7 +223,7 @@ router.post('/', authenticateToken, authorizeRole('Developer'), validate(schemas
     );
 
     // Populate developer info
-    await project.populate('developerId', 'name city skills experienceYears');
+    await project.populate('developerId', 'firstName lastName city skills experienceYears');
 
     res.status(201).json({
         success: true,
@@ -287,7 +287,7 @@ router.put('/:id', authenticateToken, authorizeRole('Developer'), validate(schem
         req.params.id,
         req.body,
         { new: true, runValidators: true }
-    ).populate('developerId', 'name city skills experienceYears');
+    ).populate('developerId', 'firstName lastName city skills experienceYears');
 
     res.json({
         success: true,

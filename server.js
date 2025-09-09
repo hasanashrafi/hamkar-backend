@@ -70,6 +70,18 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Environment check endpoint (for debugging)
+app.get('/api/env-check', (req, res) => {
+  res.status(200).json({
+    success: true,
+    NODE_ENV: process.env.NODE_ENV,
+    MONGODB_URI_EXISTS: !!process.env.MONGODB_URI,
+    MONGODB_URI_LENGTH: process.env.MONGODB_URI ? process.env.MONGODB_URI.length : 0,
+    MONGODB_URI_PREVIEW: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 30) + '...' : 'Not set',
+    PORT: process.env.PORT,
+  });
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/developers', require('./routes/developers'));
@@ -102,6 +114,11 @@ app.use('*', (req, res) => {
 const connectDB = async () => {
   try {
     const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/hamkar';
+    console.log('🔍 Environment check:');
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+    console.log('MONGODB_URI length:', process.env.MONGODB_URI ? process.env.MONGODB_URI.length : 0);
+    console.log('Using MongoDB URI:', mongoURI.substring(0, 20) + '...');
     console.log('Connecting to MongoDB...');
 
     await mongoose.connect(mongoURI);

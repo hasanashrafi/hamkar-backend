@@ -331,6 +331,61 @@ router.delete('/:id', authenticateToken, authorizeRole('Admin'), asyncHandler(as
 
 /**
  * @swagger
+ * /api/developers/profile/complete:
+ *   post:
+ *     summary: Complete developer profile (add additional info after signup)
+ *     tags: [Developers]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               phone:
+ *                 type: string
+ *               city:
+ *                 type: string
+ *               skills:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               experienceYears:
+ *                 type: number
+ *               githubUrl:
+ *                 type: string
+ *               portfolioUrl:
+ *                 type: string
+ *               salaryExpectation:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Profile completed successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/profile/complete', authenticateToken, authorizeRole('Developer'), validate(schemas.developerProfileComplete), asyncHandler(async (req, res) => {
+    const developer = await Developer.findByIdAndUpdate(
+        req.user._id,
+        req.body,
+        { new: true, runValidators: true }
+    ).select('-password -__v');
+
+    res.json({
+        success: true,
+        message: 'Profile completed successfully',
+        data: developer,
+        profileCompletion: developer.profileCompletion,
+        isProfileComplete: developer.isProfileComplete,
+    });
+}));
+
+/**
+ * @swagger
  * /api/developers/profile/availability:
  *   patch:
  *     summary: Toggle developer availability

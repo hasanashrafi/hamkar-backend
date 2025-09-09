@@ -267,7 +267,8 @@ router.get('/developers/quick', asyncHandler(async (req, res) => {
                 { isAvailable: true },
                 {
                     $or: [
-                        { name: searchRegex },
+                        { firstName: searchRegex },
+                        { lastName: searchRegex },
                         { skills: { $in: [new RegExp(q, 'i')] } },
                         { city: searchRegex },
                     ],
