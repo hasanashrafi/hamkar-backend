@@ -113,13 +113,13 @@ app.use('*', (req, res) => {
 // MongoDB connection
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/hamkar';
+    const mongoURI = process.env.MONGODB_URI;
     console.log('🔍 Environment check:');
     console.log('NODE_ENV:', process.env.NODE_ENV);
     console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
     console.log('MONGODB_URI length:', process.env.MONGODB_URI ? process.env.MONGODB_URI.length : 0);
     console.log('Using MongoDB URI:', mongoURI.substring(0, 20) + '...');
-    console.log('Connecting to MongoDB...');
+    console.log('Connecting to MongoDB Atlas...');
 
     await mongoose.connect(mongoURI);
     console.log('✅ Connected to MongoDB');

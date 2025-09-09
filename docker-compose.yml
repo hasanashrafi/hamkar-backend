@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -8,7 +8,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - MONGODB_URI=mongodb://mongo:27017/hamkar
+      - MONGODB_URI=mongodb+srv://hasan:10231023@cluster0.qjygrev.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       - JWT_SECRET=your-super-secret-jwt-key-here
       - JWT_EXPIRES_IN=7d
       - FILE_UPLOAD_PATH=./uploads
@@ -16,46 +16,27 @@ services:
     volumes:
       - ./uploads:/app/uploads
       - ./logs:/app/logs
-    depends_on:
-      - mongo
     restart: unless-stopped
     networks:
       - hamkar-network
 
-  mongo:
-    image: mongo:6.0
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=password123
-      - MONGO_INITDB_DATABASE=hamkar
-    volumes:
-      - mongo_data:/data/db
-      - ./mongo-init:/docker-entrypoint-initdb.d
-    restart: unless-stopped
-    networks:
-      - hamkar-network
-
-  mongo-express:
-    image: mongo-express:latest
-    ports:
-      - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=password123
-      - ME_CONFIG_MONGODB_URL=mongodb://admin:password123@mongo:27017/
-      - ME_CONFIG_BASICAUTH_USERNAME=admin
-      - ME_CONFIG_BASICAUTH_PASSWORD=password123
-    depends_on:
-      - mongo
-    restart: unless-stopped
-    networks:
-      - hamkar-network
-
-volumes:
-  mongo_data:
+  # MongoDB Atlas is used instead of local MongoDB
+  # mongo-express:
+  #   image: mongo-express:latest
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - ME_CONFIG_MONGODB_SERVER=cluster0-shard-00-00.qjygrev.mongodb.net
+  #     - ME_CONFIG_MONGODB_PORT=27017
+  #     - ME_CONFIG_MONGODB_ADMINUSERNAME=hasan
+  #     - ME_CONFIG_MONGODB_ADMINPASSWORD=10231023
+  #     - ME_CONFIG_MONGODB_URL=mongodb+srv://hasan:10231023@cluster0.qjygrev.mongodb.net/
+  #     - ME_CONFIG_BASICAUTH_USERNAME=admin
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+  #   restart: unless-stopped
+  #   networks:
+  #     - hamkar-network
 
 networks:
   hamkar-network:
-    driver: bridge 
+    driver: bridge

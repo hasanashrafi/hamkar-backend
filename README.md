@@ -29,7 +29,7 @@ A comprehensive Node.js backend API for a job matching platform connecting devel
 ## 📋 Prerequisites
 
 - Node.js 18+
-- MongoDB 6.0+
+- MongoDB Atlas account (cloud database)
 - Docker & Docker Compose (optional)
 
 ## 🚀 Quick Start
@@ -58,21 +58,16 @@ A comprehensive Node.js backend API for a job matching platform connecting devel
    # Edit .env with your configuration
    NODE_ENV=development
    PORT=3000
-   MONGODB_URI=mongodb://localhost:27017/hamkar
+   MONGODB_URI=mongodb+srv://username:password@cluster0.qjygrev.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
    JWT_SECRET=your-super-secret-jwt-key-here
    JWT_EXPIRES_IN=7d
    FILE_UPLOAD_PATH=./uploads
    MAX_FILE_SIZE=5242880
    ```
 
-4. **Start MongoDB**
+4. **MongoDB Atlas Setup**
 
-   ```bash
-   # Start MongoDB service
-   mongod
-
-   # Or use MongoDB Atlas cloud service
-   ```
+   The application is configured to use MongoDB Atlas cloud database. No local MongoDB installation required!
 
 5. **Run the application**
 
@@ -99,8 +94,8 @@ A comprehensive Node.js backend API for a job matching platform connecting devel
 
 2. **Access the services**
    - API: `http://localhost:3000`
-   - MongoDB: `mongodb://localhost:27017`
-   - Mongo Express: `http://localhost:8081` (admin/admin)
+   - MongoDB Atlas: Cloud database (no local MongoDB needed)
+   - Swagger Documentation: `http://localhost:3000/api-docs`
 
 ## 📚 API Documentation
 
@@ -249,15 +244,15 @@ docker-compose exec app sh
 
 ## 🔧 Environment Variables
 
-| Variable           | Description                | Default                            |
-| ------------------ | -------------------------- | ---------------------------------- |
-| `NODE_ENV`         | Environment mode           | `development`                      |
-| `PORT`             | Server port                | `3000`                             |
-| `MONGODB_URI`      | MongoDB connection string  | `mongodb://localhost:27017/hamkar` |
-| `JWT_SECRET`       | JWT signing secret         | Required                           |
-| `JWT_EXPIRES_IN`   | JWT expiration time        | `7d`                               |
-| `FILE_UPLOAD_PATH` | File upload directory      | `./uploads`                        |
-| `MAX_FILE_SIZE`    | Maximum file size in bytes | `5242880` (5MB)                    |
+| Variable           | Description                     | Default                                                                                                   |
+| ------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`         | Environment mode                | `development`                                                                                             |
+| `PORT`             | Server port                     | `3000`                                                                                                    |
+| `MONGODB_URI`      | MongoDB Atlas connection string | `mongodb+srv://hasan:10231023@cluster0.qjygrev.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0` |
+| `JWT_SECRET`       | JWT signing secret              | Required                                                                                                  |
+| `JWT_EXPIRES_IN`   | JWT expiration time             | `7d`                                                                                                      |
+| `FILE_UPLOAD_PATH` | File upload directory           | `./uploads`                                                                                               |
+| `MAX_FILE_SIZE`    | Maximum file size in bytes      | `5242880` (5MB)                                                                                           |
 
 ## 📊 Database Schema
 
