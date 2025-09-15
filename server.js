@@ -57,7 +57,7 @@ const defaultAllowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://127.0.0.1:3000',
-  'https://hamkar-backend-1.onrender.com/api'
+  'https://hamkar-backend-1.onrender.com'
 ];
 
 const envAllowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
@@ -67,25 +67,25 @@ const envAllowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
 
 const allowedOrigins = envAllowedOrigins.length > 0 ? envAllowedOrigins : defaultAllowedOrigins;
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true); // Allow non-browser clients and same-origin
-      const isAllowed = allowedOrigins.includes(origin);
-      if (isAllowed) return callback(null, true);
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
-    },
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    exposedHeaders: ['Content-Length'],
-    credentials: true,
-    maxAge: 600,
-    optionsSuccessStatus: 204,
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Allow non-browser clients and same-origin
+    const isAllowed = allowedOrigins.includes(origin);
+    if (isAllowed) return callback(null, true);
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  exposedHeaders: ['Content-Length'],
+  credentials: true,
+  maxAge: 600,
+  optionsSuccessStatus: 204,
+};
 
-// Handle preflight requests quickly
-app.options('*', cors());
+app.use(cors(corsOptions));
+
+// Handle preflight requests with same options
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
