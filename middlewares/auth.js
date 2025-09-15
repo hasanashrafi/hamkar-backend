@@ -8,7 +8,9 @@ const Employer = require('../models/Employer');
 const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+        const headerToken = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+        const cookieToken = req.cookies && (req.cookies.token || req.cookies.access_token);
+        const token = headerToken || cookieToken;
 
         if (!token) {
             return res.status(401).json({

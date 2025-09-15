@@ -84,12 +84,22 @@ router.post('/developer/signup', validate(schemas.developerSignup), asyncHandler
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
-    res.status(201).json({
-        success: true,
-        message: 'Developer created successfully',
-        data: developer.getPublicProfile(),
-        token,
-    });
+    // Set httpOnly cookie
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    };
+
+    res
+        .cookie('token', token, cookieOptions)
+        .status(201).json({
+            success: true,
+            message: 'Developer created successfully',
+            data: developer.getPublicProfile(),
+            token,
+        });
 }));
 
 /**
@@ -148,12 +158,22 @@ router.post('/employer/signup', validate(schemas.employerSignup), asyncHandler(a
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
-    res.status(201).json({
-        success: true,
-        message: 'Employer created successfully',
-        data: employer.getPublicProfile(),
-        token,
-    });
+    // Set httpOnly cookie
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    };
+
+    res
+        .cookie('token', token, cookieOptions)
+        .status(201).json({
+            success: true,
+            message: 'Employer created successfully',
+            data: employer.getPublicProfile(),
+            token,
+        });
 }));
 
 /**
@@ -242,12 +262,22 @@ router.post('/login', validate(schemas.login), asyncHandler(async (req, res) => 
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
-    res.json({
-        success: true,
-        message: 'Login successful',
-        data: user.getPublicProfile(),
-        token,
-    });
+    // Set httpOnly cookie
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    };
+
+    res
+        .cookie('token', token, cookieOptions)
+        .json({
+            success: true,
+            message: 'Login successful',
+            data: user.getPublicProfile(),
+            token,
+        });
 }));
 
 /**
@@ -360,7 +390,11 @@ router.post('/change-password', authenticateToken, validate(schemas.changePasswo
 router.post('/logout', authenticateToken, (req, res) => {
     // In a stateless JWT system, logout is handled client-side
     // This endpoint can be used for logging purposes
-    res.json({
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    }).json({
         success: true,
         message: 'Logout successful',
     });
