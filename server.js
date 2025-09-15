@@ -51,7 +51,9 @@ const defaultAllowedOrigins = [
   `http://localhost:${PORT}`,
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'http://localhost:10000',
   'http://localhost:3000',
+  'http://localhost:3001',
   'http://127.0.0.1:3000',
   'https://hamkar-backend-1.onrender.com/api'
 ];
