@@ -63,6 +63,8 @@ A comprehensive Node.js backend API for a job matching platform connecting devel
    JWT_EXPIRES_IN=7d
    FILE_UPLOAD_PATH=./uploads
    MAX_FILE_SIZE=5242880
+   # CORS
+   CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
    ```
 
 4. **MongoDB Atlas Setup**
@@ -244,15 +246,16 @@ docker-compose exec app sh
 
 ## 🔧 Environment Variables
 
-| Variable           | Description                     | Default                                                                                                   |
-| ------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `NODE_ENV`         | Environment mode                | `development`                                                                                             |
-| `PORT`             | Server port                     | `3000`                                                                                                    |
-| `MONGODB_URI`      | MongoDB Atlas connection string | `mongodb+srv://hasan:10231023@cluster0.qjygrev.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0` |
-| `JWT_SECRET`       | JWT signing secret              | Required                                                                                                  |
-| `JWT_EXPIRES_IN`   | JWT expiration time             | `7d`                                                                                                      |
-| `FILE_UPLOAD_PATH` | File upload directory           | `./uploads`                                                                                               |
-| `MAX_FILE_SIZE`    | Maximum file size in bytes      | `5242880` (5MB)                                                                                           |
+| Variable               | Description                             | Default                                                                                                   |
+| ---------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`             | Environment mode                        | `development`                                                                                             |
+| `PORT`                 | Server port                             | `3000`                                                                                                    |
+| `MONGODB_URI`          | MongoDB Atlas connection string         | `mongodb+srv://hasan:10231023@cluster0.qjygrev.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0` |
+| `JWT_SECRET`           | JWT signing secret                      | Required                                                                                                  |
+| `JWT_EXPIRES_IN`       | JWT expiration time                     | `7d`                                                                                                      |
+| `FILE_UPLOAD_PATH`     | File upload directory                   | `./uploads`                                                                                               |
+| `MAX_FILE_SIZE`        | Maximum file size in bytes              | `5242880` (5MB)                                                                                           |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated list of allowed origins | `http://localhost:3000,http://localhost:5173`                                                             |
 
 ## 📊 Database Schema
 
