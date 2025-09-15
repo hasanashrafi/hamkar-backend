@@ -84,6 +84,15 @@ router.post('/developer/signup', validate(schemas.developerSignup), asyncHandler
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
+    // Set token in cookie
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    };
+    res.cookie('token', token, cookieOptions);
+
     res.status(201).json({
         success: true,
         message: 'Developer created successfully',
@@ -147,6 +156,15 @@ router.post('/employer/signup', validate(schemas.employerSignup), asyncHandler(a
         process.env.JWT_SECRET || 'fallback-secret',
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
+
+    // Set token in cookie
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    };
+    res.cookie('token', token, cookieOptions);
 
     res.status(201).json({
         success: true,
@@ -241,6 +259,15 @@ router.post('/login', validate(schemas.login), asyncHandler(async (req, res) => 
         process.env.JWT_SECRET || 'fallback-secret',
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
+
+    // Set token in cookie
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    };
+    res.cookie('token', token, cookieOptions);
 
     res.json({
         success: true,
@@ -358,8 +385,13 @@ router.post('/change-password', authenticateToken, validate(schemas.changePasswo
  *         description: Unauthorized
  */
 router.post('/logout', authenticateToken, (req, res) => {
-    // In a stateless JWT system, logout is handled client-side
-    // This endpoint can be used for logging purposes
+    // Clear the token cookie
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+    });
+
     res.json({
         success: true,
         message: 'Logout successful',

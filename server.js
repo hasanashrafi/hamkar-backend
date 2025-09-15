@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const app = express();
@@ -45,6 +46,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Middleware
 app.use(helmet());
+app.use(cookieParser());
 
 // CORS configuration
 const defaultAllowedOrigins = [
