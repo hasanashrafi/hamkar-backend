@@ -3,6 +3,7 @@ const Developer = require('../models/Developer');
 const { authenticateToken, authorizeRole, authorizeOwnResource } = require('../middlewares/auth');
 const { validate, schemas } = require('../middlewares/validation');
 const { asyncHandler } = require('../middlewares/errorHandler');
+const upload = require('../middlewares/upload');
 
 const router = express.Router();
 
@@ -220,10 +221,34 @@ router.get('/profile', authenticateToken, authorizeRole('Developer'), asyncHandl
  *       401:
  *         description: Unauthorized
  */
-router.put('/profile', authenticateToken, authorizeRole('Developer'), validate(schemas.developerUpdate), asyncHandler(async (req, res) => {
+router.put('/profile', authenticateToken, authorizeRole('Developer'), upload.single('profilePicture'), asyncHandler(async (req, res) => {
+    // Parse fields from req.body (multer parses them as strings)
+    const updateData = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        fullName: req.body.fullName,
+        email: req.body.email,
+        phone: req.body.phone,
+        city: req.body.city,
+        role: req.body.role,
+        experienceYears: Number(req.body.experienceYears) || 0,
+        githubUrl: req.body.githubUrl,
+        portfolioUrl: req.body.portfolioUrl,
+        resumeUrl: req.body.resumeUrl,
+        salaryExpectation: Number(req.body.salaryExpectation) || 0,
+        isAvailable: req.body.isAvailable === 'true' || req.body.isAvailable === true,
+        skills: typeof req.body.skills === 'string' ? req.body.skills.split(',').map(s => s.trim()).filter(Boolean) : [],
+        projects: typeof req.body.projects === 'string' ? req.body.projects.split(',').map(p => p.trim()).filter(Boolean) : [],
+    };
+
+    // Handle profile picture
+    if (req.file) {
+        updateData.profilePicture = `/uploads/${req.file.filename}`;
+    }
+
     const developer = await Developer.findByIdAndUpdate(
         req.user._id,
-        req.body,
+        updateData,
         { new: true, runValidators: true }
     ).select('-password -__v');
 
