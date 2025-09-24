@@ -223,6 +223,35 @@ router.get('/profile', authenticateToken, authorizeRole('Developer'), asyncHandl
  */
 router.put('/profile', authenticateToken, authorizeRole('Developer'), upload.single('profilePicture'), asyncHandler(async (req, res) => {
     // Parse fields from req.body (multer parses them as strings)
+    // Parse projects as array of objects from JSON strings
+    let projects = [];
+    if (Array.isArray(req.body['projects[]'])) {
+        projects = req.body['projects[]'].map(p => {
+            try {
+                return JSON.parse(p);
+            } catch {
+                return {};
+            }
+        });
+    } else if (req.body['projects[]']) {
+        try {
+            projects = [JSON.parse(req.body['projects[]'])];
+        } catch {
+            projects = [{}];
+        }
+    }
+
+    // Attach project images if any
+    if (req.files && req.files['projectImages[]']) {
+        const images = req.files['projectImages[]'];
+        projects = projects.map((p, idx) => {
+            if (images[idx]) {
+                p.image = `/uploads/${images[idx].filename}`;
+            }
+            return p;
+        });
+    }
+
     const updateData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -238,7 +267,7 @@ router.put('/profile', authenticateToken, authorizeRole('Developer'), upload.sin
         salaryExpectation: Number(req.body.salaryExpectation) || 0,
         isAvailable: req.body.isAvailable === 'true' || req.body.isAvailable === true,
         skills: typeof req.body.skills === 'string' ? req.body.skills.split(',').map(s => s.trim()).filter(Boolean) : [],
-        projects: typeof req.body.projects === 'string' ? req.body.projects.split(',').map(p => p.trim()).filter(Boolean) : [],
+        projects,
     };
 
     // Handle profile picture
